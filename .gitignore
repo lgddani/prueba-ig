@@ -1,0 +1,29 @@
+# PDF de la prueba técnica
+examen.pdf
+
+# .NET
+backend/**/bin/
+backend/**/obj/
+backend/**/*.user
+backend/**/TestResults/
+
+# Node / Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+npm-debug.log*
+
+# Variables de entorno con secretos reales (nunca versionar; usar .env.example como plantilla)
+.env
+
+# launchSettings.json queda con valores de desarrollo (Jwt__Secret, PasswordHasher__Pepper,
+# cadena de conexión) si se configura el perfil de depuración desde Visual Studio/Rider
+backend/src/Kanban.Api/Properties/launchSettings.json
+
+# Herramientas locales / IDE
+.claude/
+.vs/
+.vscode/
+*.swp
+.DS_Store
