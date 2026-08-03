@@ -1,0 +1,153 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="flex flex-column gap-3">
+    <div class="card mb-0">
+        <button pButton icon="pi pi-arrow-left" label="Proyectos" class="p-button-text p-button-sm mb-2" (click)="volver()"></button>
+
+        <div class="flex align-items-center gap-2 flex-wrap mb-3">
+            <h2 class="m-0">{{ proyecto()?.nombre }}</h2>
+            <div class="flex align-items-center gap-1 surface-100 border-round px-2 py-1" *ngIf="usuariosConectados().length > 0" pTooltip="{{ usuariosConectados().join(', ') }}">
+                <i class="pi pi-circle-fill text-green-500" style="font-size: 0.55rem"></i>
+                <span class="text-500 text-sm">{{ usuariosConectados().length }} conectado(s)</span>
+            </div>
+        </div>
+
+        <div class="flex flex-column lg:flex-row lg:align-items-center lg:justify-content-between gap-3">
+            <div class="flex flex-wrap gap-2 align-items-center">
+                <input type="text" pInputText placeholder="Buscar tarea..." [ngModel]="filtroTexto()" (ngModelChange)="filtroTexto.set($event)" [ngModelOptions]="{ standalone: true }" />
+                <p-dropdown
+                    [options]="usuarios()"
+                    [ngModel]="filtroResponsableId()"
+                    (ngModelChange)="filtroResponsableId.set($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                    optionLabel="nombre"
+                    optionValue="id"
+                    placeholder="Todos los responsables"
+                    [showClear]="true"
+                    styleClass="w-14rem"
+                    [appendTo]="'body'"
+                ></p-dropdown>
+                <p-dropdown
+                    [options]="prioridades"
+                    [ngModel]="filtroPrioridad()"
+                    (ngModelChange)="filtroPrioridad.set($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Toda prioridad"
+                    [showClear]="true"
+                    styleClass="w-10rem"
+                    [appendTo]="'body'"
+                ></p-dropdown>
+            </div>
+
+            <div class="flex flex-wrap gap-2 align-items-center">
+                <button pButton icon="pi pi-file-pdf" label="PDF" class="p-button-outlined p-button-sm" (click)="descargarPdf()"></button>
+                <button pButton icon="pi pi-file-excel" label="Excel" class="p-button-outlined p-button-sm p-button-success" (click)="descargarExcel()"></button>
+                <button pButton icon="pi pi-plus" label="Columna" class="p-button-sm" (click)="abrirNuevaColumna()"></button>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="cargando()" class="flex justify-content-center py-8">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+
+    <div class="flex gap-3 overflow-x-auto pb-3" *ngIf="!cargando()">
+        <div *ngFor="let columna of columnas(); let i = index" class="surface-card border-round shadow-1 flex-shrink-0" style="width: 20rem">
+            <div class="flex align-items-center justify-content-between p-3 border-bottom-1 surface-border">
+                <div class="flex align-items-center gap-2">
+                    <button pButton icon="pi pi-angle-left" class="p-button-text p-button-sm" [disabled]="i === 0" (click)="moverColumna(columna, -1)"></button>
+                    <span class="font-medium">{{ columna.nombre }}</span>
+                    <span class="text-500 text-sm">({{ tareasDeColumna(columna.id).length }})</span>
+                    <button pButton icon="pi pi-angle-right" class="p-button-text p-button-sm" [disabled]="i === columnas().length - 1" (click)="moverColumna(columna, 1)"></button>
+                </div>
+                <div class="flex gap-1">
+                    <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm" (click)="abrirEdicionColumna(columna)"></button>
+                    <button pButton icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger" (click)="confirmarEliminarColumna(columna)"></button>
+                </div>
+            </div>
+
+            <div
+                cdkDropList
+                [id]="'col-' + columna.id"
+                [cdkDropListData]="tareasDeColumna(columna.id)"
+                [cdkDropListConnectedTo]="idsColumnasDropList()"
+                (cdkDropListDropped)="onDropTarea($event, columna)"
+                class="p-2 flex flex-column gap-2"
+                style="min-height: 8rem"
+            >
+                <div
+                    *ngFor="let tarea of tareasDeColumna(columna.id)"
+                    cdkDrag
+                    [cdkDragData]="tarea"
+                    class="surface-100 border-round p-3 cursor-move"
+                    (click)="abrirEdicionTarea(tarea)"
+                >
+                    <div class="flex justify-content-between align-items-start gap-2">
+                        <span class="font-medium">{{ tarea.titulo }}</span>
+                        <button
+                            pButton
+                            icon="pi pi-trash"
+                            class="p-button-text p-button-sm p-button-danger flex-shrink-0"
+                            (click)="confirmarEliminarTarea(tarea); $event.stopPropagation()"
+                        ></button>
+                    </div>
+                    <p class="text-500 text-sm mt-1 mb-2" *ngIf="tarea.descripcion">{{ tarea.descripcion }}</p>
+                    <div class="flex align-items-center justify-content-between">
+                        <p-tag [value]="tarea.prioridad" [severity]="severidadPrioridad(tarea.prioridad)"></p-tag>
+                        <div class="flex align-items-center gap-2" *ngIf="tarea.responsableNombre">
+                            <p-avatar [label]="tarea.responsableNombre.charAt(0)" shape="circle" size="normal"></p-avatar>
+                            <span class="text-sm">{{ tarea.responsableNombre }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-2 border-top-1 surface-border">
+                <button pButton icon="pi pi-plus" label="Nueva tarea" class="p-button-text p-button-sm w-full" (click)="abrirNuevaTarea(columna)"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Diálogo columna -->
+<p-dialog [visible]="columnaDialogVisible()" (visibleChange)="columnaDialogVisible.set($event)" [modal]="true" [style]="{ width: '24rem' }" [header]="columnaEditando() ? 'Editar columna' : 'Nueva columna'">
+    <form [formGroup]="columnaForm" class="pt-2">
+        <label class="block mb-2 font-medium">Nombre</label>
+        <input type="text" pInputText formControlName="nombre" class="w-full" />
+    </form>
+    <ng-template pTemplate="footer">
+        <button pButton label="Cancelar" class="p-button-text" (click)="columnaDialogVisible.set(false)"></button>
+        <button pButton label="Guardar" icon="pi pi-check" (click)="guardarColumna()"></button>
+    </ng-template>
+</p-dialog>
+
+<!-- Diálogo tarea -->
+<p-dialog [visible]="tareaDialogVisible()" (visibleChange)="tareaDialogVisible.set($event)" [modal]="true" [style]="{ width: '30rem' }" [header]="tareaEditando() ? 'Editar tarea' : 'Nueva tarea'">
+    <form [formGroup]="tareaForm" class="flex flex-column gap-3 pt-2">
+        <div>
+            <label class="block mb-2 font-medium">Título</label>
+            <input type="text" pInputText formControlName="titulo" class="w-full" />
+        </div>
+        <div>
+            <label class="block mb-2 font-medium">Descripción</label>
+            <textarea pInputTextarea formControlName="descripcion" class="w-full" rows="3"></textarea>
+        </div>
+        <div class="flex gap-3">
+            <div class="flex-1">
+                <label class="block mb-2 font-medium">Prioridad</label>
+                <p-dropdown [options]="prioridades" formControlName="prioridad" optionLabel="label" optionValue="value" styleClass="w-full" [appendTo]="'body'"></p-dropdown>
+            </div>
+            <div class="flex-1">
+                <label class="block mb-2 font-medium">Responsable</label>
+                <p-dropdown [options]="usuarios()" formControlName="responsableId" optionLabel="nombre" optionValue="id" [showClear]="true" placeholder="Sin asignar" styleClass="w-full" [appendTo]="'body'"></p-dropdown>
+            </div>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <button pButton label="Cancelar" class="p-button-text" (click)="tareaDialogVisible.set(false)"></button>
+        <button pButton label="Guardar" icon="pi pi-check" (click)="guardarTarea()"></button>
+    </ng-template>
+</p-dialog>
