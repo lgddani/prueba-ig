@@ -1,0 +1,4 @@
+{
+  "apiUrl": "https://localhost:7257/api",
+  "signalrUrl": "https://localhost:7257/hubs/board"
+}
