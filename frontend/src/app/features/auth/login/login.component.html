@@ -1,0 +1,20 @@
+<div class="flex align-items-center justify-content-center min-h-screen" style="background: linear-gradient(180deg, var(--primary-color) 10%, var(--surface-ground) 30%);">
+    <div class="surface-card p-5 shadow-2 border-round w-full sm:w-25rem">
+        <div class="text-center mb-5">
+            <div class="text-900 text-3xl font-medium mb-3">Kanban</div>
+            <span class="text-600 font-medium">Ingresa a tu cuenta</span>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="enviar()">
+            <label for="correo" class="block text-900 font-medium mb-2">Correo</label>
+            <input id="correo" type="email" pInputText formControlName="correo" class="w-full mb-3" placeholder="correo@dominio.com" />
+
+            <label for="password" class="block text-900 font-medium mb-2">Contraseña</label>
+            <p-password id="password" formControlName="password" [feedback]="false" [toggleMask]="true" styleClass="w-full mb-3" inputStyleClass="w-full"></p-password>
+
+            <p class="text-red-500 mb-3" *ngIf="error()">{{ error() }}</p>
+
+            <button pButton type="submit" label="Ingresar" class="w-full" [loading]="cargando()"></button>
+        </form>
+    </div>
+</div>
