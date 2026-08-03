@@ -1,0 +1,100 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="card">
+    <div class="flex flex-column sm:flex-row justify-content-between align-items-start sm:align-items-center mb-4 gap-3 flex-wrap">
+        <h2 class="m-0">Proyectos</h2>
+        <div class="flex gap-2 align-items-center flex-wrap sm:flex-nowrap">
+            <span class="p-input-icon-left w-full sm:w-20rem">
+                <i class="pi pi-search"></i>
+                <input
+                    type="text"
+                    pInputText
+                    class="w-full"
+                    placeholder="Buscar por nombre..."
+                    [(ngModel)]="filtroNombre"
+                    [ngModelOptions]="{ standalone: true }"
+                    (input)="onFiltroChange()"
+                />
+            </span>
+            <button pButton icon="pi pi-plus" label="Nuevo proyecto" (click)="abrirNuevo()" class="white-space-nowrap flex-shrink-0"></button>
+        </div>
+    </div>
+
+    <p-table
+        [value]="proyectos()"
+        [lazy]="true"
+        (onLazyLoad)="cargarLazy($event)"
+        [paginator]="true"
+        [rows]="tamanoPagina"
+        [totalRecords]="totalRegistros()"
+        [loading]="cargando()"
+        dataKey="id"
+        responsiveLayout="scroll"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Inicio</th>
+                <th>Fin previsto</th>
+                <th>Columnas</th>
+                <th style="width: 12rem"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-proyecto>
+            <tr>
+                <td>
+                    <a class="cursor-pointer font-medium text-primary" (click)="irAlTablero(proyecto)">{{ proyecto.nombre }}</a>
+                    <div class="text-500 text-sm" *ngIf="proyecto.descripcion">{{ proyecto.descripcion }}</div>
+                </td>
+                <td><p-tag [value]="proyecto.estado" [severity]="severidadEstado(proyecto.estado)"></p-tag></td>
+                <td>{{ proyecto.fechaInicio | date: 'yyyy-MM-dd' }}</td>
+                <td>{{ proyecto.fechaFinPrevista | date: 'yyyy-MM-dd' }}</td>
+                <td>{{ proyecto.totalColumnas }}</td>
+                <td>
+                    <button pButton icon="pi pi-th-large" class="p-button-text p-button-sm" pTooltip="Ver tablero" (click)="irAlTablero(proyecto)"></button>
+                    <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm" pTooltip="Editar" (click)="abrirEdicion(proyecto)"></button>
+                    <button pButton icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger" pTooltip="Eliminar" (click)="confirmarEliminar(proyecto)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="6" class="text-center text-500 py-5">No hay proyectos que coincidan con la búsqueda.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [visible]="dialogVisible()" (visibleChange)="dialogVisible.set($event)" [modal]="true" [style]="{ width: '32rem' }" [header]="editando() ? 'Editar proyecto' : 'Nuevo proyecto'">
+    <form [formGroup]="form" class="flex flex-column gap-3 pt-2">
+        <div>
+            <label class="block mb-2 font-medium">Nombre</label>
+            <input type="text" pInputText formControlName="nombre" class="w-full" />
+        </div>
+        <div>
+            <label class="block mb-2 font-medium">Descripción</label>
+            <textarea pInputTextarea formControlName="descripcion" class="w-full" rows="3"></textarea>
+        </div>
+        <div class="flex gap-3">
+            <div class="flex-1">
+                <label class="block mb-2 font-medium">Fecha inicio</label>
+                <p-calendar formControlName="fechaInicio" dateFormat="yy-mm-dd" styleClass="w-full" [showIcon]="true" [appendTo]="'body'"></p-calendar>
+            </div>
+            <div class="flex-1">
+                <label class="block mb-2 font-medium">Fecha fin prevista</label>
+                <p-calendar formControlName="fechaFinPrevista" dateFormat="yy-mm-dd" styleClass="w-full" [showIcon]="true" [appendTo]="'body'"></p-calendar>
+            </div>
+        </div>
+        <div>
+            <label class="block mb-2 font-medium">Estado</label>
+            <p-dropdown [options]="estados" formControlName="estado" optionLabel="label" optionValue="value" styleClass="w-full" [appendTo]="'body'"></p-dropdown>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <button pButton label="Cancelar" class="p-button-text" (click)="dialogVisible.set(false)"></button>
+        <button pButton label="Guardar" icon="pi pi-check" [loading]="guardando()" (click)="guardar()"></button>
+    </ng-template>
+</p-dialog>
