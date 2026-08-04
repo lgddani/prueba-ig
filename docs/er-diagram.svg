@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 820" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <style>
+      .hdr { fill: #1e3a5f; }
+      .hdrText { fill: #ffffff; font-size: 15px; font-weight: 700; }
+      .rowPk { fill: #dbeafe; }
+      .rowNormal { fill: #ffffff; }
+      .rowAlt { fill: #f8fafc; }
+      .border { stroke: #1e3a5f; stroke-width: 1.5; fill: none; }
+      .divider { stroke: #94a3b8; stroke-width: 1; }
+      .rowText { font-size: 13px; fill: #1e293b; }
+      .pkText { font-size: 13px; fill: #1e293b; font-weight: 700; }
+      .fkBadge { font-size: 11px; fill: #b45309; font-weight: 700; }
+      .relLine { stroke: #334155; stroke-width: 1.75; fill: none; }
+      .relLabel { font-size: 12px; fill: #475569; font-style: italic; }
+      .title { font-size: 20px; font-weight: 700; fill: #0f172a; }
+      .legend { font-size: 12px; fill: #475569; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1080" height="820" fill="#ffffff"/>
+  <text x="20" y="30" class="title">Modelo de datos — Kanban (PostgreSQL)</text>
+
+  <!-- ===================== PROYECTOS ===================== -->
+  <g>
+    <rect x="410" y="55" width="280" height="200" class="border" fill="#ffffff"/>
+    <rect x="410" y="55" width="280" height="32" class="hdr"/>
+    <text x="550" y="76" text-anchor="middle" class="hdrText">PROYECTOS</text>
+
+    <rect x="410" y="87" width="280" height="24" class="rowPk"/>
+    <text x="422" y="103" class="pkText">Id</text>
+    <text x="500" y="103" class="rowText">: uuid</text>
+    <line x1="410" y1="111" x2="690" y2="111" class="divider"/>
+
+    <text x="422" y="127" class="rowText">Nombre</text><text x="560" y="127" class="rowText">: varchar(150)</text>
+    <rect x="410" y="135" width="280" height="24" class="rowAlt"/>
+    <text x="422" y="151" class="rowText">Descripcion</text><text x="560" y="151" class="rowText">: varchar(2000)</text>
+    <text x="422" y="175" class="rowText">FechaInicio</text><text x="560" y="175" class="rowText">: date</text>
+    <rect x="410" y="183" width="280" height="24" class="rowAlt"/>
+    <text x="422" y="199" class="rowText">FechaFinPrevista</text><text x="600" y="199" class="rowText">: date</text>
+    <text x="422" y="223" class="rowText">Estado</text><text x="560" y="223" class="rowText">: varchar(30)</text>
+    <rect x="410" y="231" width="280" height="24" class="rowAlt"/>
+    <text x="422" y="247" class="rowText">FechaCreacion</text><text x="580" y="247" class="rowText">: timestamptz</text>
+  </g>
+
+  <!-- ===================== COLUMNAS ===================== -->
+  <g>
+    <rect x="410" y="320" width="280" height="128" class="border" fill="#ffffff"/>
+    <rect x="410" y="320" width="280" height="32" class="hdr"/>
+    <text x="550" y="341" text-anchor="middle" class="hdrText">COLUMNAS</text>
+
+    <rect x="410" y="352" width="280" height="24" class="rowPk"/>
+    <text x="422" y="368" class="pkText">Id</text>
+    <text x="500" y="368" class="rowText">: uuid</text>
+    <line x1="410" y1="376" x2="690" y2="376" class="divider"/>
+
+    <text x="422" y="392" class="rowText">Nombre</text><text x="560" y="392" class="rowText">: varchar(100)</text>
+    <rect x="410" y="400" width="280" height="24" class="rowAlt"/>
+    <text x="422" y="416" class="rowText">Orden</text><text x="560" y="416" class="rowText">: int</text>
+    <text x="422" y="440" class="rowText">ProyectoId</text><text x="580" y="440" class="rowText">: uuid</text>
+    <text x="650" y="440" text-anchor="end" class="fkBadge">FK</text>
+  </g>
+
+  <!-- ===================== TAREAS ===================== -->
+  <g>
+    <rect x="410" y="510" width="280" height="224" class="border" fill="#ffffff"/>
+    <rect x="410" y="510" width="280" height="32" class="hdr"/>
+    <text x="550" y="531" text-anchor="middle" class="hdrText">TAREAS</text>
+
+    <rect x="410" y="542" width="280" height="24" class="rowPk"/>
+    <text x="422" y="558" class="pkText">Id</text>
+    <text x="500" y="558" class="rowText">: uuid</text>
+    <line x1="410" y1="566" x2="690" y2="566" class="divider"/>
+
+    <text x="422" y="582" class="rowText">Titulo</text><text x="560" y="582" class="rowText">: varchar(200)</text>
+    <rect x="410" y="590" width="280" height="24" class="rowAlt"/>
+    <text x="422" y="606" class="rowText">Descripcion</text><text x="560" y="606" class="rowText">: varchar(2000)</text>
+    <text x="422" y="630" class="rowText">Prioridad</text><text x="560" y="630" class="rowText">: varchar(20)</text>
+    <rect x="410" y="638" width="280" height="24" class="rowAlt"/>
+    <text x="422" y="654" class="rowText">ResponsableId</text><text x="600" y="654" class="rowText">: uuid?</text>
+    <text x="650" y="654" text-anchor="end" class="fkBadge">FK</text>
+    <text x="422" y="678" class="rowText">ColumnaId</text><text x="580" y="678" class="rowText">: uuid</text>
+    <text x="650" y="678" text-anchor="end" class="fkBadge">FK</text>
+    <rect x="410" y="686" width="280" height="24" class="rowAlt"/>
+    <text x="422" y="702" class="rowText">Orden</text><text x="560" y="702" class="rowText">: bigint</text>
+    <text x="422" y="726" class="rowText">FechaCreacion</text><text x="580" y="726" class="rowText">: timestamptz</text>
+  </g>
+
+  <!-- ===================== USUARIOS ===================== -->
+  <g>
+    <rect x="760" y="510" width="280" height="152" class="border" fill="#ffffff"/>
+    <rect x="760" y="510" width="280" height="32" class="hdr"/>
+    <text x="900" y="531" text-anchor="middle" class="hdrText">USUARIOS</text>
+
+    <rect x="760" y="542" width="280" height="24" class="rowPk"/>
+    <text x="772" y="558" class="pkText">Id</text>
+    <text x="850" y="558" class="rowText">: uuid</text>
+    <line x1="760" y1="566" x2="1040" y2="566" class="divider"/>
+
+    <text x="772" y="582" class="rowText">Nombre</text><text x="910" y="582" class="rowText">: varchar(150)</text>
+    <rect x="760" y="590" width="280" height="24" class="rowAlt"/>
+    <text x="772" y="606" class="rowText">Correo</text><text x="910" y="606" class="rowText">: varchar(200) [UQ]</text>
+    <text x="772" y="630" class="rowText">PasswordHash</text><text x="930" y="630" class="rowText">: varchar(500)</text>
+    <rect x="760" y="638" width="280" height="24" class="rowAlt"/>
+    <text x="772" y="654" class="rowText">FechaCreacion</text><text x="930" y="654" class="rowText">: timestamptz</text>
+  </g>
+
+  <!-- ===================== Relaciones ===================== -->
+  <!-- Proyectos (1) -> Columnas (muchas), obligatoria en ambos lados -->
+  <line x1="550" y1="255" x2="550" y2="320" class="relLine"/>
+  <line x1="540" y1="255" x2="560" y2="255" class="relLine"/> <!-- tick: uno -->
+  <line x1="550" y1="306" x2="536" y2="320" class="relLine"/>
+  <line x1="550" y1="306" x2="550" y2="320" class="relLine"/>
+  <line x1="550" y1="306" x2="564" y2="320" class="relLine"/> <!-- pata de gallo: muchos -->
+  <text x="558" y="290" class="relLabel">contiene</text>
+
+  <!-- Columnas (1) -> Tareas (muchas), obligatoria en ambos lados -->
+  <line x1="550" y1="448" x2="550" y2="510" class="relLine"/>
+  <line x1="540" y1="448" x2="560" y2="448" class="relLine"/> <!-- tick: uno -->
+  <line x1="550" y1="496" x2="536" y2="510" class="relLine"/>
+  <line x1="550" y1="496" x2="550" y2="510" class="relLine"/>
+  <line x1="550" y1="496" x2="564" y2="510" class="relLine"/> <!-- pata de gallo: muchos -->
+  <text x="558" y="480" class="relLabel">contiene</text>
+
+  <!-- Usuarios (1) -> Tareas (0..muchas), responsable opcional -->
+  <line x1="760" y1="586" x2="690" y2="586" class="relLine"/>
+  <line x1="760" y1="576" x2="760" y2="596" class="relLine"/> <!-- tick: uno -->
+  <circle cx="716" cy="586" r="5" fill="#ffffff" stroke="#334155" stroke-width="1.75"/> <!-- opcional -->
+  <line x1="704" y1="586" x2="690" y2="572" class="relLine"/>
+  <line x1="704" y1="586" x2="690" y2="586" class="relLine"/>
+  <line x1="704" y1="586" x2="690" y2="600" class="relLine"/> <!-- pata de gallo: muchos -->
+  <text x="725" y="565" text-anchor="middle" class="relLabel">responsable de</text>
+
+  <!-- ===================== Leyenda ===================== -->
+  <g transform="translate(20, 765)">
+    <text x="0" y="0" class="legend" font-weight="700">Notación (pie de gallo):</text>
+    <line x1="0" y1="14" x2="20" y2="14" class="relLine"/>
+    <line x1="8" y1="9" x2="8" y2="19" class="relLine"/>
+    <text x="26" y="18" class="legend">uno (obligatorio)</text>
+    <line x1="170" y1="14" x2="196" y2="14" class="relLine"/>
+    <line x1="196" y1="14" x2="184" y2="8" class="relLine"/>
+    <line x1="196" y1="14" x2="184" y2="20" class="relLine"/>
+    <text x="204" y="18" class="legend">muchos</text>
+    <circle cx="300" cy="14" r="5" fill="#ffffff" stroke="#334155" stroke-width="1.75"/>
+    <text x="312" y="18" class="legend">opcional (0..N)</text>
+    <rect x="420" y="6" width="14" height="14" class="rowPk"/>
+    <text x="440" y="18" class="legend">clave primaria (PK)</text>
+    <text x="600" y="18" class="fkBadge">FK</text>
+    <text x="620" y="18" class="legend">clave foránea</text>
+  </g>
+</svg>
